@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Container,
-  Grid,
   Paper,
   TextField,
   Typography,
@@ -39,18 +38,18 @@ export default function SearchPage() {
 
       {/* Search Results */}
       {results.length > 0 ? (
-        <Grid container spacing={2}>
+        <Box display="flex" flexWrap="wrap" gap={2}>
           {results.map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+            <Box key={index} flex="1 1 calc(33.33% - 16px)">
               <Paper sx={{ p: 2 }}>
                 <Typography variant="h6">{item}</Typography>
                 <Typography variant="body2">
                   This is a preview of the search result content.
                 </Typography>
               </Paper>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       ) : (
         <Typography variant="body1" align="center" color="text.secondary">
           No results found.

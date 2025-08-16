@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "24.3.0",
+    "@types/react": "^19.1.10",
     "eslint": "latest",
     "eslint-config-next": "latest"
   }
