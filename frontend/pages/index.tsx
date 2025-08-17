@@ -1,3 +1,4 @@
+import QRCode from "qrcode.react";
 import {
   Container,
   Typography,
@@ -53,7 +54,7 @@ const HomePage = () => {
         sx={{
           maxWidth: 900,
           mx: "auto",
-          pt: { xs: 7, md: 12 },
+          pt: { xs: 2, md: 4 }, // reduce top padding
           pb: 2,
           mb: { xs: 2, md: 3 },
           textAlign: "center",
@@ -61,76 +62,7 @@ const HomePage = () => {
           zIndex: 1,
         }}
       >
-        {/* Medical-themed SVG/gradient background */}
-        <Box
-          sx={{
-            width: "100%",
-            height: 140,
-            mb: 2,
-            background:
-              "url('/medical-hero.svg'), linear-gradient(120deg, #e0eafc 0%, #d0f3fc 100%)",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            borderRadius: 6,
-            opacity: 0.7,
-          }}
-        />
-        {/* Search bar centered above title */}
-        <Box sx={{ maxWidth: 420, mx: "auto", mb: 3 }}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (search.trim())
-                window.location.href = `/search?query=${encodeURIComponent(
-                  search
-                )}`;
-            }}
-            style={{ width: "100%", position: "relative" }}
-          >
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search cases, jobs, webinars..."
-              className="input-bar youtube-search"
-              style={{
-                paddingRight: 48,
-                borderRadius: 24,
-                border: "1px solid #b0c4de",
-                height: 44,
-                fontSize: "1.1rem",
-                background: "#fff",
-                boxShadow: "0 2px 8px rgba(33,147,176,0.08)",
-                verticalAlign: "middle",
-                margin: 0,
-                paddingLeft: 22,
-                paddingTop: 0,
-                paddingBottom: 0,
-              }}
-            />
-            <Button
-              type="submit"
-              sx={{
-                position: "absolute",
-                right: 6,
-                top: "50%",
-                transform: "translateY(-50%)",
-                minWidth: 0,
-                p: 0.5,
-                borderRadius: 20,
-                background: "#f7fafc",
-                boxShadow: "0 1px 4px rgba(33,147,176,0.08)",
-              }}
-            >
-              <span
-                className="material-icons"
-                style={{ fontSize: 26, color: "#2193b0" }}
-              >
-                search
-              </span>
-            </Button>
-          </form>
-        </Box>
+        <Box/>
         <Typography
           variant="h1"
           fontWeight={900}
@@ -347,6 +279,64 @@ const HomePage = () => {
               Register
             </Button>
           </Link>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          maxWidth: 900,
+          mx: 'auto',
+          px: 2,
+          py: 2,
+          mb: { xs: 4, md: 6 },
+          position: 'relative',
+          zIndex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 6,
+          background: 'linear-gradient(120deg, #e0f7fa 0%, #f8f9fa 100%)',
+          borderRadius: 6,
+          boxShadow: '0 2px 24px #2193b022',
+        }}
+      >
+        <Box sx={{ flex: 1, minWidth: 260 }}>
+          <Typography variant="h4" fontWeight={700} color="#2193b0" mb={2}>
+            Ready to improve your medical journey?
+          </Typography>
+          <Typography variant="body1" color="#555" mb={3}>
+            Download the Med-Internia app and access medical cases, jobs, webinars, and more on your mobile device.
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button variant="contained" sx={{ background: 'linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%)', color: '#fff', fontWeight: 700, px: 2, borderRadius: 2, boxShadow: 1 }}>
+              Download for iOS
+            </Button>
+            <Button variant="contained" sx={{ background: 'linear-gradient(90deg, #2193b0 0%, #6dd5ed 100%)', color: '#fff', fontWeight: 700, px: 2, borderRadius: 2, boxShadow: 1 }}>
+              Download for Android
+            </Button>
+          </Box>
+        </Box>
+        <Box
+            sx={{
+              bgcolor: '#c8d8f7ff', // light blue for contrast
+              borderRadius: 4,
+              boxShadow: '0 4px 32px #2193b044',
+              p: 3,
+              minWidth: 220,
+              textAlign: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+        >
+          <div style={{ background: '#fff', padding: 8, borderRadius: 12, boxShadow: '0 2px 8px #2193b022', marginBottom: 12 }}>
+            <img src="/qrcode.png" alt="Med-Internia QR Code" width={140} height={140} style={{ display: 'block', margin: '0 auto' }} />
+          </div>
+            <Typography variant="h6" color="#2193b0" fontWeight={700} mb={1}>
+              Med-Internia App on Mobile
+            </Typography>
+          <Typography variant="body2" color="#888">
+            Scan to Download
+          </Typography>
         </Box>
       </Box>
       {/* How it works / Testimonials Section */}

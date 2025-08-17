@@ -7,14 +7,14 @@ import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const hideNavbarRoutes = ['/', '/auth/login', '/auth/register'];
+  const showNavbar = !hideNavbarRoutes.includes(router.pathname);
   return (
     <>
       <CssBaseline />
-      <Navbar route={router.pathname} />
-  {/* Mouse trail effect */}
-  <MouseTrail />
-      {/* Add top margin to main content to avoid hiding under navbar */}
-      <div style={{ marginTop: 64 }}>
+      {showNavbar && <Navbar route={router.pathname} />}
+      <MouseTrail />
+      <div style={{ marginTop: showNavbar ? 64 : 0, minHeight: '100vh' }}>
         <Component {...pageProps} />
       </div>
       <style jsx global>{`
