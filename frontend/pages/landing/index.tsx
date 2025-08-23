@@ -1665,7 +1665,7 @@ const Landing = () => {
     >
       <div style={{ maxWidth: 1400, margin: "0 auto", padding: 20 }}>
         <div className="landing-grid">
-          <div className="landing-left">
+          <div className="landing-left" style={{ scrollBehavior: "smooth" }}>
             <ProfileSidebar />
           </div>
           <div
@@ -1676,6 +1676,7 @@ const Landing = () => {
               gap: 0,
               width: "100%",
               minWidth: 0,
+              scrollBehavior: "smooth",
             }}
           >
             <div ref={postFormRef}>
@@ -1722,5 +1723,4 @@ const Landing = () => {
     </div>
   );
 };
-
 export default Landing;

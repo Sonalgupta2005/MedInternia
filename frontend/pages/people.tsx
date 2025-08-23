@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import api from "../utils/api";
 
 export default function PeoplePage() {
+  const [isConnected, setIsConnected] = useState(false);
   const router = useRouter();
   const { id } = router.query;
   const [activeTab, setActiveTab] = useState("cases");
@@ -39,11 +40,11 @@ export default function PeoplePage() {
   useEffect(() => {
     if (!id) return;
     // Fetch profile
-    api.get(`/users/${id}/profile`).then(res => {
+    api.get(`/users/${id}/profile`).then((res) => {
       setProfile(res.data?.data?.user || res.data?.user || res.data);
     });
     // Fetch posts/cases
-    api.get(`/cases?authorId=${id}`).then(res => {
+    api.get(`/cases?authorId=${id}`).then((res) => {
       setPosts(res.data?.data?.cases || res.data?.cases || res.data || []);
     });
   }, [id]);
@@ -149,9 +150,20 @@ export default function PeoplePage() {
                 }}
               >
                 {profile?.profilePicture ? (
-                  <img src={profile.profilePicture} alt="Profile" style={{ width: 80, height: 80, borderRadius: "50%", objectFit: "cover" }} />
+                  <img
+                    src={profile.profilePicture}
+                    alt="Profile"
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
                 ) : (
-                  `${(profile?.firstName?.[0] || "A").toUpperCase()}${(profile?.lastName?.[0] || "V").toUpperCase()}`
+                  `${(profile?.firstName?.[0] || "A").toUpperCase()}${(
+                    profile?.lastName?.[0] || "V"
+                  ).toUpperCase()}`
                 )}
               </div>
             </div>
@@ -164,7 +176,9 @@ export default function PeoplePage() {
                   margin: "0 0 8px 0",
                 }}
               >
-                {profile ? `Dr. ${profile.firstName} ${profile.lastName}` : "Dr. Anushka Verma"}
+                {profile
+                  ? `Dr. ${profile.firstName} ${profile.lastName}`
+                  : "Dr. Anushka Verma"}
               </h2>
               <p
                 style={{
@@ -181,26 +195,35 @@ export default function PeoplePage() {
                   marginTop: 16,
                   padding: "10px 28px",
                   borderRadius: 8,
-                  background:
-                    "linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%)",
+                  background: isConnected
+                    ? "linear-gradient(90deg, #64748b 0%, #94a3b8 100%)"
+                    : "linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%)",
                   color: "#fff",
                   fontWeight: 700,
                   fontSize: 16,
                   border: "none",
                   boxShadow: "0 2px 8px rgba(30,41,59,0.08)",
-                  cursor: "pointer",
+                  cursor: isConnected ? "default" : "pointer",
                   transition: "background 0.2s, box-shadow 0.2s",
+                  opacity: isConnected ? 0.8 : 1,
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.background =
-                    "linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.background =
-                    "linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%)")
-                }
+                onMouseEnter={(e) => {
+                  if (!isConnected) {
+                    e.currentTarget.style.background =
+                      "linear-gradient(90deg, #2563eb 0%, #0ea5e9 100%)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isConnected) {
+                    e.currentTarget.style.background =
+                      "linear-gradient(90deg, #0ea5e9 0%, #38bdf8 100%)";
+                  }
+                }}
+                onClick={() => {
+                  if (!isConnected) setIsConnected(true);
+                }}
               >
-                Connect
+                {isConnected ? "Connected" : "Connect"}
               </button>
             </div>
             <div
@@ -460,40 +483,95 @@ export default function PeoplePage() {
                 // Safely handle comments and likes
                 const commentsCount = Array.isArray(post.comments)
                   ? post.comments.length
-                  : typeof post.comments === "object" && post.comments !== null && post.comments.length !== undefined
+                  : typeof post.comments === "object" &&
+                    post.comments !== null &&
+                    post.comments.length !== undefined
                   ? post.comments.length
                   : typeof post.comments === "number"
                   ? post.comments
                   : 0;
                 const likesCount = Array.isArray(post.likes)
                   ? post.likes.length
-                  : typeof post.likes === "object" && post.likes !== null && post.likes.length !== undefined
+                  : typeof post.likes === "object" &&
+                    post.likes !== null &&
+                    post.likes.length !== undefined
                   ? post.likes.length
                   : typeof post.likes === "number"
                   ? post.likes
                   : 0;
+                const caseColors = [
+                  {
+                    bg: "linear-gradient(90deg, #d1fae5 100%, #10b981 100%)",
+                    border: "8px solid #10b981",
+                  }, // green
+                  {
+                    bg: "linear-gradient(90deg, #e0f2fe 100%, #38bdf8 100%)",
+                    border: "8px solid #38bdf8",
+                  }, // blue
+                  // {
+                  //   bg: "linear-gradient(90deg, #ffe7c2 100%, #fb923c 100%)",
+                  //   border: "8px solid #fb923c",
+                  // }, // orange
+                  {
+                    bg: "linear-gradient(90deg, #f3e8ff 100%, #a78bfa 100%)",
+                    border: "8px solid #a78bfa",
+                  }, // purple
+                  {
+                    bg: "linear-gradient(90deg, #fef9c3 100%, #f59e42 100%)",
+                    border: "8px solid #f59e42",
+                  }, // yellow
+                  {
+                    bg: "linear-gradient(90deg, #fdd3d3ff 100%, #fa9f9fff 100%)",
+                    border: "8px solid #ef4444",
+                  }, // red
+                  {
+                    bg: "linear-gradient(90deg, #bbf7d0 100%, #22d3ee 100%)",
+                    border: "8px solid #22d3ee",
+                  }, // teal
+                  {
+                    bg: "linear-gradient(90deg, #e0e7ff 100%, #6366f1 100%)",
+                    border: "8px solid #6366f1",
+                  }, // indigo
+                  {
+                    bg: "linear-gradient(90deg, #fde2ff 100%, #a770ef 100%)",
+                    border: "8px solid #a770ef",
+                  }, // pink-purple
+                  {
+                    bg: "linear-gradient(90deg, #caffbf 100%, #9bf6ff 100%)",
+                    border: "8px solid #9bf6ff",
+                  }, // mint-blue
+                ];
+                const color = caseColors[idx % caseColors.length];
+                // Format date and time
+                let formattedDate = "Date unknown";
+                const rawDate = post.date || post.createdAt;
+                if (rawDate) {
+                  const d = new Date(rawDate);
+                  if (!isNaN(d.getTime())) {
+                    formattedDate = d.toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                    });
+                  } else {
+                    formattedDate = rawDate;
+                  }
+                }
                 return (
                   <div
                     key={post.id || post._id}
                     style={{
-                      background:
-                        idx === 0
-                          ? "linear-gradient(90deg, #d1fae5 100%, #10b981 100%)"
-                          : idx === 1
-                          ? "linear-gradient(90deg, #e0f2fe 100%, #38bdf8 100%)"
-                          : "linear-gradient(90deg, #ffe7c2 10%, #fb923c 50%)",
+                      background: color.bg,
                       borderRadius: 16,
                       padding: 24,
                       marginBottom: 16,
                       transition: "box-shadow 0.2s, transform 0.2s",
                       boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
                       cursor: "pointer",
-                      borderLeft:
-                        idx === 0
-                          ? "8px solid #10b981"
-                          : idx === 1
-                          ? "8px solid #38bdf8"
-                          : "8px solid #fb923c",
+                      borderLeft: color.border,
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.boxShadow =
@@ -535,7 +613,7 @@ export default function PeoplePage() {
                       }}
                     >
                       <span style={{ color: "#6366f1", fontWeight: 500 }}>
-                        {post.date || post.createdAt || "Date unknown"}
+                        {formattedDate}
                       </span>
                       <span
                         style={{
@@ -558,7 +636,9 @@ export default function PeoplePage() {
                           background: likedPosts.has(post.id || post._id)
                             ? "#fee2e2"
                             : "#e5e7eb",
-                          color: likedPosts.has(post.id || post._id) ? "#dc2626" : "#374151",
+                          color: likedPosts.has(post.id || post._id)
+                            ? "#dc2626"
+                            : "#374151",
                           border: "none",
                           borderRadius: 8,
                           padding: "4px 12px",
@@ -566,7 +646,9 @@ export default function PeoplePage() {
                         }}
                         onClick={() => toggleLike(post.id || post._id)}
                       >
-                        ❤️{likesCount + (likedPosts.has(post.id || post._id) ? 1 : 0)}
+                        ❤️
+                        {likesCount +
+                          (likedPosts.has(post.id || post._id) ? 1 : 0)}
                       </button>
                       <span>📜 {commentsCount}</span>
                     </div>
