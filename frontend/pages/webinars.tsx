@@ -16,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import api from '../utils/api';
 import WebinarJoin from "../components/WebinarJoin";
 import { canUser } from "../utils/permissions";
+import { hasAuthToken, redirectToLogin } from "../utils/authRedirect";
 
 const getWebinarEndTime = (webinar: any) => {
   const duration = Number(webinar.duration || 0);
@@ -37,6 +38,7 @@ const isWebinarExpired = (webinar: any) => {
 };
 
 export default function WebinarsPage() {
+  const router = useRouter();
   const [webinars, setWebinars] = useState<any[]>([]);
   const [selectedWebinar, setSelectedWebinar] = useState<any>(null);
   const [canManageWebinars, setCanManageWebinars] = useState(false);
