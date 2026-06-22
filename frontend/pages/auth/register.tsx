@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, CircularProgress } from '@mui/material';
 import { Container, Typography, TextField, Button, Box, Alert, MenuItem, Card, Avatar, Fade, Grow, Stack, LinearProgress, IconButton, InputAdornment } from '@mui/material';
 import api from '../../utils/api';
@@ -52,7 +52,7 @@ export default function Register() {
   const [otherMedicalHistoryValue, setotherMedicalHistoryValue] = useState('');
   const [otherAllergies, setotherAllergies] = useState(false);
   const [otherAllergiesValue, setotherAllergiesValue] = useState('');
-
+  const [doctors, setDoctors] = useState<any[]>([]);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -78,6 +78,24 @@ export default function Register() {
     if (form.userType === 'intern') return requiredFieldsStep2.intern;
     return [];
   }
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await api.get('/doctors');
+
+        console.log('Doctors:', res.data.data.doctors);
+
+        setDoctors(res.data.data.doctors || []);
+      } catch (err) {
+        console.error('Failed to fetch doctors', err);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
+
   function getProgress() {
     if (step === 1) {
       const filled = requiredFieldsStep1.filter(f => form[f]);
@@ -246,22 +264,30 @@ export default function Register() {
       setError('Phone number and emergency contact number cannot be the same.');
       return;
     }
+    if (form.userType === 'doctor') {
+      if (parseInt(form.experience, 10) < 0) {
+        setError('Experience cannot be a negative number.');
+        return;
+      }
+      if (!/^[A-Za-z0-9\/\- ]{4,30}$/.test(form.licenseNumber)) {
+        setError('Enter a valid License Number');
+        return;
+      }
+      let age = today.getFullYear() - (dob ? dob.getFullYear() : today.getFullYear());
+      if (dob && (age < 22)) {
+        setError('Minimum age requirement not met.');
+        return;
+      }
+    }
+    if (form.userType === 'intern') {
+      if (!/^[A-Za-z\s.,'-]{3,100}$/.test(form.medicalSchool)) {
+        setError('Enter a valid Medical School name');
+        return;
+      }
+    }
 
-    if (form.userType == 'doctor' && parseInt(form.experience, 10) < 0) {
-      setError('Experience cannot be a negative number.');
-      return;
-    }
-    if (form.userType === 'doctor' && !/^[A-Za-z0-9\/\- ]{4,30}$/.test(form.licenseNumber)) {
-      setError('License number must be 4-30 characters and can include letters, numbers, spaces, slashes, or dashes.');
-      return;
-    }
-    let age = today.getFullYear() - (dob ? dob.getFullYear() : today.getFullYear());
     if (dob && dob > today) {
       setError('Date of birth cannot be in the future.');
-      return;
-    }
-    if (form.userType === 'doctor' && dob && (age < 17)) {
-      setError('Minimum age requirement not met.');
       return;
     }
     setPhoneError(phoneValidationError);
@@ -310,7 +336,6 @@ export default function Register() {
       if (!payload.phone) delete payload.phone;
       if (!payload.dateOfBirth) delete payload.dateOfBirth;
       if (!payload.gender) delete payload.gender;
-      console.log('Submitting payload:', payload);
       const res = await api.post('/auth/register', payload);
       const user = res.data.data.user;
       localStorage.setItem('token', res.data.data.token);
@@ -571,9 +596,46 @@ export default function Register() {
                       <Fade in timeout={600}>
                         <Box>
                           <TextField label="Medical School" name="medicalSchool" fullWidth margin="normal" value={form.medicalSchool} onChange={handleChange} required />
-                          <TextField label="Year of Study" name="yearOfStudy" type="number" fullWidth margin="normal" value={form.yearOfStudy} onChange={handleChange} required />
+                          <TextField
+                            select
+                            label="Year of Study"
+                            name="yearOfStudy"
+                            fullWidth
+                            margin="normal"
+                            value={form.yearOfStudy}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">Select year</MenuItem>
+                            <MenuItem value="1">1st Year</MenuItem>
+                            <MenuItem value="2">2nd Year</MenuItem>
+                            <MenuItem value="3">3rd Year</MenuItem>
+                            <MenuItem value="4">4th Year</MenuItem>
+                            <MenuItem value="5">5th Year</MenuItem>
+                            <MenuItem value="6+">6th Year+</MenuItem>
+                          </TextField>
                           <TextField label="Interests (comma separated)" name="interests" fullWidth margin="normal" value={form.interests} onChange={handleChange} />
-                          <TextField label="Mentor Doctor ID (optional)" name="mentorDoctor" fullWidth margin="normal" value={form.mentorDoctor} onChange={handleChange} />
+                          <TextField
+                            select
+                            label="Mentor Doctor (Optional)"
+                            name="mentorDoctor"
+                            fullWidth
+                            margin="normal"
+                            value={form.mentorDoctor}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">
+                              No Mentor Selected
+                            </MenuItem>
+
+                            {doctors.map((doctor) => (
+                              <MenuItem key={doctor._id} value={doctor._id}>
+                                Dr. {doctor.firstName} {doctor.lastName}
+                                {doctor.specialization
+                                  ? ` - ${doctor.specialization}`
+                                  : ''}
+                              </MenuItem>
+                            ))}
+                          </TextField>
                         </Box>
                       </Fade>
                     )}
