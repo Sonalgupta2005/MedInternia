@@ -24,7 +24,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     '/auth/forgot-password',
   ];
   const showFooter = !hideFooterRoutes.includes(router.pathname);
-  const navbarHeight = medInterniaTheme.custom.navbarHeight;
 
   return (
     <ErrorBoundary>
@@ -47,7 +46,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             {showNavbar && <Navbar route={router.pathname} />}
             <div
               style={{
-                marginTop: showNavbar ? navbarHeight : 0,
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',

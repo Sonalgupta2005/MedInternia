@@ -16,6 +16,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  CssBaseline,
 } from '@mui/material';
 import BookIcon from '@mui/icons-material/Book';
 import DatasetIcon from '@mui/icons-material/Dataset';
@@ -72,11 +73,11 @@ const NavButton: React.FC<NavButtonProps> = ({
             py: 1.25,
           }}
         >
-          <ListItemIcon sx={{ color: 'white', minWidth: 40 }}>{icon}</ListItemIcon>
+          <ListItemIcon sx={{ color: 'text.primary', minWidth: 40 }}>{icon}</ListItemIcon>
           <ListItemText
             primary={label}
             primaryTypographyProps={{
-              color: 'white',
+              color: 'text.primary',
               fontWeight: isActive ? 700 : 500,
               fontSize: '0.95rem',
             }}
@@ -98,9 +99,9 @@ const NavButton: React.FC<NavButtonProps> = ({
           mx: 0.25,
           p: 1.2,
           borderRadius: 2,
-          backgroundColor: isActive ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+          backgroundColor: isActive ? 'rgba(0, 0, 0, 0.05)' : 'transparent',
           transition: 'background-color 0.2s ease',
-          '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.15)' },
+          '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.08)' },
         }}
       >
         {icon}
@@ -117,7 +118,6 @@ export default function Navbar({ route }: { route?: string }) {
   const handleHomeNav = () => {
     if (typeof window !== 'undefined') {
       const token = getAuthToken();
-      const role = getCurrentUserRole() || "";
       if (token) {
         router.push('/dashboard');
         return;
@@ -324,11 +324,20 @@ export default function Navbar({ route }: { route?: string }) {
 
   return (
     <>
+      <CssBaseline />
       <AppBar
         position="fixed"
         sx={{
-          background: theme.custom.navbarGradient,
+          top: 0,
+          left: 0,
+          right: 0,
+          background: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(10px)',
+          boxShadow: '0 2px 8px -2px rgba(0, 0, 0, 0.1)',
+          borderBottom: '1px solid',
+          borderColor: 'divider',
           zIndex: theme.zIndex.drawer + 1,
+          color: 'text.primary',
         }}
       >
         <Toolbar
@@ -338,7 +347,7 @@ export default function Navbar({ route }: { route?: string }) {
             gap: 1,
           }}
         >
-          {isMobile && (
+          {isMobile && isLoggedIn && (
             <IconButton
               color="inherit"
               aria-label="Open navigation menu"
@@ -371,20 +380,20 @@ export default function Navbar({ route }: { route?: string }) {
                 fontWeight: 700,
                 letterSpacing: 0.5,
                 display: { xs: 'none', sm: 'block' },
-                color: 'white',
+                color: 'text.primary',
               }}
             >
               MedInternia
             </Typography>
           </Box>
 
-          {!isMobile && (
+          {!isMobile && isLoggedIn && (
             <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', maxWidth: 420, mx: 'auto' }}>
               {searchBar}
             </Box>
           )}
 
-          {!isMobile && (
+          {!isMobile && isLoggedIn && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               {navItems.map((item) => (
                 <NavButton
@@ -411,6 +420,13 @@ export default function Navbar({ route }: { route?: string }) {
         </Toolbar>
       </AppBar>
 
+      <Toolbar
+        sx={{
+          minHeight: theme.custom.navbarHeight,
+          visibility: 'hidden',
+        }}
+      />
+
       <Drawer
         anchor="left"
         open={drawerOpen}
@@ -418,8 +434,8 @@ export default function Navbar({ route }: { route?: string }) {
         ModalProps={{ keepMounted: true }}
         PaperProps={{
           sx: {
-            background: theme.custom.navbarGradient,
-            color: 'white',
+            background: 'background.paper',
+            color: 'text.primary',
             width: 280,
           },
         }}
@@ -432,7 +448,8 @@ export default function Navbar({ route }: { route?: string }) {
               justifyContent: 'space-between',
               px: 2,
               py: 2,
-              borderBottom: '1px solid rgba(255,255,255,0.15)',
+              borderBottom: '1px solid',
+              borderColor: 'divider',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -443,7 +460,7 @@ export default function Navbar({ route }: { route?: string }) {
                 height={28}
                 style={{ borderRadius: '50%' }}
               />
-              <Typography variant="subtitle1" fontWeight={700} color="white">
+              <Typography variant="subtitle1" fontWeight={700} color="text.primary">
                 MedInternia
               </Typography>
             </Box>
@@ -467,13 +484,12 @@ export default function Navbar({ route }: { route?: string }) {
             ))}
           </List>
 
-          <Divider sx={{ borderColor: 'rgba(255,255,255,0.15)' }} />
+          <Divider />
           <Box sx={{ p: 2 }}>
-            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
               Medical learning & collaboration
             </Typography>
           </Box>
-
         </Box>
       </Drawer>
     </>
