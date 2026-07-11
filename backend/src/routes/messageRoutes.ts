@@ -1,5 +1,5 @@
 import express from 'express';
-import { protect } from '../middleware/auth';
+import { authenticate } from '../middleware/auth';
 import {
   getConversations,
   getMessages,
@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-router.use(protect);
+router.use(authenticate);
 
 router.get('/conversations', getConversations);
 router.get('/:conversationId', getMessages);

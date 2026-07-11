@@ -204,7 +204,7 @@ export default function MessagesPage() {
       
       <Grid container spacing={2} sx={{ flexGrow: 1, overflow: 'hidden' }}>
         {/* Sidebar */}
-        <Grid item xs={12} md={4} sx={{ height: '100%' }}>
+        <Grid size={{ xs: 12, md: 4 }} sx={{ height: '100%' }}>
           <Paper sx={{ height: '100%', overflowY: 'auto', borderRadius: 3, border: '1px solid #e3eafc' }}>
             <List>
               {conversations.length === 0 && !activeConversationId?.startsWith('new-') && (
@@ -244,7 +244,7 @@ export default function MessagesPage() {
         </Grid>
 
         {/* Chat Area */}
-        <Grid item xs={12} md={8} sx={{ height: '100%' }}>
+        <Grid size={{ xs: 12, md: 8 }} sx={{ height: '100%' }}>
           <Paper sx={{ height: '100%', display: 'flex', flexDirection: 'column', borderRadius: 3, border: '1px solid #e3eafc' }}>
             {activeConversationId ? (
               <>
@@ -293,7 +293,7 @@ export default function MessagesPage() {
                 
                 <Box component="form" onSubmit={handleSendMessage} sx={{ p: 2, borderTop: '1px solid #e3eafc' }}>
                   <Grid container spacing={1}>
-                    <Grid item xs>
+                    <Grid size="grow">
                       <TextField
                         fullWidth
                         size="small"
@@ -303,7 +303,7 @@ export default function MessagesPage() {
                         autoComplete="off"
                       />
                     </Grid>
-                    <Grid item>
+                    <Grid>
                       <Button type="submit" variant="contained" disabled={!newMessage.trim()}>
                         Send
                       </Button>
